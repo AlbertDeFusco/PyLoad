@@ -79,7 +79,6 @@ if __name__ == '__main__':
         pyplot.xlabel('Minutes')
         pyplot.ylabel('Network traffic (MB)')
         pyplot.legend()
-	pyplot.ylim(0.,200.)
 
       pyplot.savefig( host+'.png' )
       sys.exit()
