@@ -23,6 +23,7 @@ def get_bytes(t, iface='eth0'):
 if __name__ == '__main__':
   start=time.time()
   date= time.strftime("%Y-%m-%d %H:%M:%S", time.gmtime(start))
+  host=socket.gethostname()
 
 
   load = {}
@@ -58,16 +59,21 @@ if __name__ == '__main__':
 
     except KeyboardInterrupt:
       print
-      print "Make graph"
-      host=socket.gethostname()
-      x=[l[0]/60. for l in load['eth1']]
-      t=[l[1]/1024./1024. for l in load['eth1']]
-      r=[l[2]/1024./1024. for l in load['eth1']]
-      pyplot.plot(x,t,'b-',label='incoming')
-      pyplot.plot(x,r,'r-',label='outgoing')
-      pyplot.legend()
-      pyplot.title(host+' eth1\nStart Time: '+date)
-      pyplot.xlabel('Minutes')
-      pyplot.ylabel('Network traffic (MB)')
-      pyplot.savefig( 'eth0.png' )
+      print "Making graph"
+      print '  '+host+'.png'
+      pyplot.figure(1)
+      for num,net in enumerate(get_interfaces()):
+	pyplot.subplot(2,1,num+1)
+        x=[l[0]/60. for l in load[net]]
+        t=[l[1]/1024./1024. for l in load[net]]
+        r=[l[2]/1024./1024. for l in load[net]]
+        pyplot.plot(x,t,'b-',label='incoming')
+        pyplot.plot(x,r,'r-',label='outgoing')
+        pyplot.title(host+' '+net+'\nStart Time: '+date)
+        pyplot.xlabel('Minutes')
+        pyplot.ylabel('Network traffic (MB)')
+        pyplot.legend()
+	pyplot.ylim(0.,50.)
+
+      pyplot.savefig( host+'.png' )
       sys.exit()
