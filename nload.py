@@ -5,6 +5,8 @@ import sys
 import socket
 import os
 import netifaces
+import matplotlib
+matplotlib.use('Agg')
 from matplotlib import pyplot
 
 def get_interfaces():
@@ -63,17 +65,21 @@ if __name__ == '__main__':
       print '  '+host+'.png'
       pyplot.figure(1)
       for num,net in enumerate(get_interfaces()):
-	pyplot.subplot(2,1,num+1)
+        if len(get_interfaces()) > 2:
+          pyplot.subplot(2,2,num+1)
+        else:
+          pyplot.subplot(2,1,num+1)
+
         x=[l[0]/60. for l in load[net]]
         t=[l[1]/1024./1024. for l in load[net]]
         r=[l[2]/1024./1024. for l in load[net]]
         pyplot.plot(x,t,'b-',label='incoming')
         pyplot.plot(x,r,'r-',label='outgoing')
-        pyplot.title(host+' '+net+'\nStart Time: '+date)
+        pyplot.title(net+' : '+date)
         pyplot.xlabel('Minutes')
         pyplot.ylabel('Network traffic (MB)')
         pyplot.legend()
-	pyplot.ylim(0.,50.)
+	pyplot.ylim(0.,200.)
 
       pyplot.savefig( host+'.png' )
       sys.exit()
